@@ -11,10 +11,17 @@ describe 'Authentication' do
     it { should have_selector('title', text: 'Sign in') }
 
     describe 'with invalid information' do
+      let(:user) { FactoryGirl.create(:user) }
+      # do not sign_in here... not signing in is the point of the test
       before { click_button 'Sign in' }
 
       it { should have_selector('title', text: 'Sign in') }
       it { should have_error_message('Invalid') }
+
+      it { should_not have_link('Users', href: users_path)}
+      it { should_not have_link('Profile', href: user_path(user)) }
+      it { should_not have_link('Settings', href: edit_user_path(user)) }
+      it { should_not have_link('Sign out', href: signout_path) }
 
       describe 'after visiting another page' do
         before { click_link 'Home' }
